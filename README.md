@@ -10,6 +10,8 @@
 
 An unofficial **Assault Fire PH** preservation/server-emulation project.
 
+**In-game English translations:** [Install and restore translation corrections](translations/README.md). Report bad or untranslated text using the [translation issue form](https://github.com/armangido/af-emulator/issues/new?template=translation-report.yml).
+
 > [!WARNING]
 > **Anti-scam notice — this emulator is free**
 >
@@ -90,7 +92,7 @@ The script handles the annoying parts for you:
 - creates/verifies the local RSA key pair and installs the matching `APClient.dat`;
 - repairs the three Windows hosts entries;
 - applies the verified datetime patch permanently to **your own `TGame.exe`**, first saving an exact `TGame.exe.bak` backup;
-- creates `TGame_AFDEV.exe` locally from that verified patched `TGame.exe` so PvE does not require a separately distributed AFDEV executable;
+- creates `TGame_AFDEV.exe` locally from that verified patched `TGame.exe`, then installs the verified native **ServerMove v4** patch into the AFDEV copy only, so PvE does not require a separately distributed AFDEV executable;
 - starts the emulator server;
 - waits for preflight to reach **UNLOCKED**;
 - starts the runtime launch helper automatically;
@@ -144,7 +146,9 @@ For safety, the launcher still asks before replacing a mismatched `PRIVATE.PEM`.
 > The one-click script does **not** download or redistribute Assault Fire files.
 > It only works with the game files you already have. It permanently patches a
 > verified local `TGame.exe` and keeps the original as `TGame.exe.bak`. The local
-> `TGame_AFDEV.exe` copy is created from that verified patched file. If the
+> `TGame_AFDEV.exe` copy is created from that verified patched file and receives
+> the verified native ServerMove-v4 patch locally. The normal client `TGame.exe`
+> is not replaced by the ServerMove tool. If the
 > signature is at a different RVA, it must be the only matching executable-
 > section signature. The patcher uses a safe code cave or adds a dedicated
 > executable section when the PE headers have an unused section-header slot.
@@ -1025,7 +1029,9 @@ $env:AF_GAME_DIR = "D:\AssaultFirePH\Binaries\Win32"
 
 When a PvE room starts, the emulator handles the dedicated-server lifecycle automatically.
 
-You do not normally start AFDEV manually.
+The local AFDEV copy also receives the verified native ServerMove-v4 patch automatically. The loader validates the live restored body and now refuses to start gameplay if the local AFDEV copy still has the stripped stock stub; the old runtime movement fallback has been removed. Steel/TGIF startup temporarily keeps the stock stripped ServerMove stub during map `OPEN`, then restores v4 after LoadMap stage 7 before the client is released.
+
+You do not normally start AFDEV or run the ServerMove patcher manually.
 
 More details for developers: [PvE Runtime](docs/PVE_RUNTIME.md).
 
@@ -1202,7 +1208,7 @@ See [Vital Setup Notes](docs/VITAL_SETUP_NOTES.md).
 
 The public stable baseline is **v143b**.
 
-Working/integrated areas include VERSION, AUTH, DIR, ROLE, ZONE, existing/local profile login, shared rooms, dynamic room work, PvE dedicated-server allocation/lifecycle, stock-selected PvE map/settings propagation, lazy AFDEV startup, inventory/shop/profile preservation work, and the live-verified native A50E AP/TP refresh path.
+Working/integrated areas include VERSION, AUTH, DIR, ROLE, ZONE, existing/local profile login, shared rooms, dynamic room work, PvE dedicated-server allocation/lifecycle, stock-selected PvE map/settings propagation, lazy AFDEV startup, the live-verified native ServerMove-v4 AFDEV path, inventory/shop/profile preservation work, and the live-verified native A50E AP/TP refresh path.
 
 Local username/password registration is available through the development
 website described above. First-time in-game nickname creation and parts of the

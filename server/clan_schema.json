@@ -1,0 +1,2355 @@
+{
+  "source_sha256": "712d4eebfeeafe5c977530a59c7ce05d81cf203e2fb0cab1029653dca65758d2",
+  "pointer_base": "0x114",
+  "meta_header_bytes": 184,
+  "entry_bytes": 180,
+  "structures": {
+    "C2ZN_ReqVerifyClanName": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResVerifyClanName": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqCreateClan": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "SafeCode",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 12,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CertifiedMail",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 64,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResCreateClan": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqClanDetail": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResClanDetail": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanDetailedInfo",
+        "type": 1,
+        "element_size": 252,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": "ClanDetailedInfo",
+        "count_field": null
+      }
+    ],
+    "ClanDetailedInfo": [
+      {
+        "name": "Clanid",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "MaxMembers",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedIcn",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedBkg",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedFrm",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanRecord",
+        "type": 1,
+        "element_size": 37,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": "ClanRecord",
+        "count_field": null
+      },
+      {
+        "name": "Introduction",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 128,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "RecruitType",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "LevelLimit",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Count",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Freeze",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "FreezeTime",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CreateTime",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "DailyReduceExp",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "DailyExpMax",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "DailyExp",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "NextLevelExperience",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ClanRecord": [
+      {
+        "name": "Experience",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ExperienceBak1st",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ExperienceBak2rd",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Level",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Rank",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "RankTrend",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Extend",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Activity",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "MembersForCalcActivity",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "LevelForCalcActivity",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CalcActivityTime",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqClanMembers": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "IsAll",
+        "type": 2,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResClanMembers": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "IsAll",
+        "type": 2,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "TotalCount",
+        "type": 5,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackageFlag",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "MemberInfo",
+        "type": 1,
+        "element_size": 24202,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": "ClanMembersInfo",
+        "count_field": null
+      }
+    ],
+    "ClanMembersInfo": [
+      {
+        "name": "Count",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanPlayerInfo",
+        "type": 1,
+        "element_size": 116,
+        "capacity": 200,
+        "string_capacity": 0,
+        "nested": "ClanPlayer",
+        "count_field": "Count"
+      },
+      {
+        "name": "Status",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 200,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "NextLevelPrestige",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 200,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      }
+    ],
+    "ClanPlayer": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Nickname",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Role",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "LastLoginDate",
+        "type": 15,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "JoinClanTime",
+        "type": 15,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "GroupID",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "GroupRole",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Status",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "TotalContribute",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CurweekContribute",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "LastweekContribute",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "AccumuGameExp",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Muzzled",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PrestigeLevel",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "AbuseComplaint",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PlugInComplaint",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "OtherComplaint",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "TeamID",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "NextPrayTime",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CurdayContribute",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "LastdayContribute",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CurmonthContribute",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "LastmonthContribute",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CtrbChangeTime",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqClanCommon": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanID",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResClanCommon": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanCommonInfo",
+        "type": 1,
+        "element_size": 252,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": "ClanCommonInfo",
+        "count_field": null
+      },
+      {
+        "name": "CaptainUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CaptainName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ClanCommonInfo": [
+      {
+        "name": "ClanID",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CaptainID",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "MaxMembers",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CurMembers",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedIcn",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedBkg",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedFrm",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanRecord",
+        "type": 1,
+        "element_size": 37,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": "ClanRecord",
+        "count_field": null
+      },
+      {
+        "name": "RecruitType",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "LevelLimit",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Introduction",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 128,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Freeze",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CreateTime",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "DailyReduceExp",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "DailyExpMax",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "DailyExp",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "NextLevelExperience",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqSearchClanByName": [
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanScaleType",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResSearchClanByName": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "SearchName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Count",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanScaleType",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanID",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 36,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "Record",
+        "type": 1,
+        "element_size": 37,
+        "capacity": 36,
+        "string_capacity": 0,
+        "nested": "ClanRecord",
+        "count_field": "Count"
+      },
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 36,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "CaptainName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 36,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "CurMembers",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 36,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "MaxMembers",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 36,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "ClanIntroduction",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 36,
+        "string_capacity": 128,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "RecruitType",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 36,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "QtId0",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 36,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "QtId1",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 36,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "QtId2",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 36,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "QtVerify",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 36,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "QtRoomId",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 36,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      }
+    ],
+    "C2ZN_ReqJoinClan": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanID",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "JoinMsg",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 81,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResJoinClan": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "OfflineMsgId",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanID",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqApproveList": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "NickName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResApproveList": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Count",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanApproveList",
+        "type": 1,
+        "element_size": 145,
+        "capacity": 100,
+        "string_capacity": 0,
+        "nested": "ClanApproveInfo",
+        "count_field": "Count"
+      }
+    ],
+    "ClanApproveInfo": [
+      {
+        "name": "ClanId",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ReqMsgId",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ReqUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ReqNickname",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ReqTime",
+        "type": 11,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "MsgContent",
+        "type": 2,
+        "element_size": 1,
+        "capacity": 81,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqApproveJoin": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Count",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PlayerInfoList",
+        "type": 1,
+        "element_size": 17,
+        "capacity": 100,
+        "string_capacity": 0,
+        "nested": "C2ZN_ApprovePlayerInfo",
+        "count_field": "Count"
+      }
+    ],
+    "C2ZN_ApprovePlayerInfo": [
+      {
+        "name": "IsAgree",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ReqUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ReqMsgId",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResApproveJoin": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ReqUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ReqMsgId",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_NtfQuitClan": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResQuitClan": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqFireClanPlayer": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ObjUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "SafeCode",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 12,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResFireClanPlayer": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ObjUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Nickname",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "FirePlayerCount",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqPromoteClanPlayer": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ObjUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PlayerNewRole",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResPromoteClanPlayer": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ObjUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqDemoteClanPlayer": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ObjUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PlayerNewRole",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResDemoteClanPlayer": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ObjUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqModClanIntroduction": [
+      {
+        "name": "Introduction",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 128,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResModClanIntroduction": [
+      {
+        "name": "Result",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Introduction",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 128,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqExpandClan": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "TotalPlayerCount",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResExpandClan": [
+      {
+        "name": "TotalPlayerCount",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqClanPost": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResClanPost": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PostCount",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Post",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 128,
+        "nested": null,
+        "count_field": "PostCount"
+      }
+    ],
+    "C2ZN_ReqUpdateClanPost": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PostIndex",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Post",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 128,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResUpdateClanPost": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PostIndex",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqSubteams": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResSubteams": [
+      {
+        "name": "Result",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Count",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Subteams",
+        "type": 1,
+        "element_size": 37,
+        "capacity": 10,
+        "string_capacity": 0,
+        "nested": "ClanSubTeam",
+        "count_field": "Count"
+      }
+    ],
+    "ClanSubTeam": [
+      {
+        "name": "SubteamId",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "SubteamName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "MemberCount",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqBuyClanBadge": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PayType",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Count",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "CommodityList",
+        "type": 1,
+        "element_size": 14,
+        "capacity": 20,
+        "string_capacity": 0,
+        "nested": "ShopCommodity",
+        "count_field": "Count"
+      }
+    ],
+    "ShopCommodity": [
+      {
+        "name": "CommodityId",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PriceIndex",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Price",
+        "type": 8,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "VoucherId",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResBuyClanBadge": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqSetClanBadge": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Count",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedIcn",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedFrm",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedBkg",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResSetClanBadge": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqClanBadge": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_NtfClanBadgeProps": [
+      {
+        "name": "NtfType",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Count",
+        "type": 6,
+        "element_size": 2,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "BadgePropList",
+        "type": 1,
+        "element_size": 25,
+        "capacity": 100,
+        "string_capacity": 0,
+        "nested": "ClanPropInfo",
+        "count_field": "Count"
+      },
+      {
+        "name": "PackedIcn",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedFrm",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PackedBkg",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ClanPropInfo": [
+      {
+        "name": "GID",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ItemId",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ObtainTime",
+        "type": 11,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "AvailbilityHour",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Type",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqClanBadgeList": [
+      {
+        "name": "Count",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ReqUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "UinList",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 32,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      }
+    ],
+    "ZN2C_ResClanBadgeList": [
+      {
+        "name": "Count",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "UinList",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 32,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "IcnIDList",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 32,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "FrmIDList",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 32,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      },
+      {
+        "name": "BkgIDList",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 32,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": "Count"
+      }
+    ],
+    "C2ZN_ReqInviteJoin": [
+      {
+        "name": "ManagerUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "InvitedUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResInviteJoin": [
+      {
+        "name": "InvitedUin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ErrorCode",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_NtfInviteJoinClan": [
+      {
+        "name": "ClanID",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Invite_id",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqConfirmJoin": [
+      {
+        "name": "IsAgree",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanID",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Invite_id",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResConfirmJoin": [
+      {
+        "name": "Result",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "OfflineMsgId",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanID",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "ClanName",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 32,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "C2ZN_ReqDismissClan": [
+      {
+        "name": "Uin",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "SafeCode",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 12,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_ResDismissClan": [
+      {
+        "name": "ErrorCode",
+        "type": 7,
+        "element_size": 4,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      }
+    ],
+    "ZN2C_NtfRefreshPlayer": [
+      {
+        "name": "OfflineMsgId",
+        "type": 12,
+        "element_size": 8,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "PlayerInfoA",
+        "type": 1,
+        "element_size": 116,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": "ClanPlayer",
+        "count_field": null
+      },
+      {
+        "name": "PlayerInfoB",
+        "type": 1,
+        "element_size": 116,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": "ClanPlayer",
+        "count_field": null
+      },
+      {
+        "name": "RefreshType",
+        "type": 3,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 0,
+        "nested": null,
+        "count_field": null
+      },
+      {
+        "name": "Extend",
+        "type": 21,
+        "element_size": 1,
+        "capacity": 1,
+        "string_capacity": 128,
+        "nested": null,
+        "count_field": null
+      }
+    ]
+  }
+}

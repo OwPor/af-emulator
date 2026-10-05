@@ -45,7 +45,7 @@ jobs:
       - name: Compile Python sources
         shell: pwsh
         run: |
-          python -m compileall -q server tools tests
+          python -m compileall -q server tools tests translations
 
       - name: Validate one-click PowerShell syntax
         shell: pwsh

@@ -1,0 +1,491 @@
+{
+  "source_sha256": "bb1c8e0f1c50d825444cfe0fb22ff6b8819a60ef46fa70776be4d6bd10090394",
+  "price_index_base": 0,
+  "level_1_component_limits": {
+    "0": 7,
+    "1": 7,
+    "2": 7
+  },
+  "commodities": {
+    "200032": {
+      "item_id": 200001,
+      "type": 1,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 1
+    },
+    "200033": {
+      "item_id": 200002,
+      "type": 1,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 1
+    },
+    "200034": {
+      "item_id": 200003,
+      "type": 1,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 1
+    },
+    "200035": {
+      "item_id": 200004,
+      "type": 1,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200036": {
+      "item_id": 200005,
+      "type": 1,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200037": {
+      "item_id": 200006,
+      "type": 1,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200038": {
+      "item_id": 200007,
+      "type": 1,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200039": {
+      "item_id": 200008,
+      "type": 1,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200040": {
+      "item_id": 200009,
+      "type": 1,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200041": {
+      "item_id": 200010,
+      "type": 1,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 4
+    },
+    "200042": {
+      "item_id": 210001,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 1
+    },
+    "200043": {
+      "item_id": 210002,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 1
+    },
+    "200044": {
+      "item_id": 210003,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 1
+    },
+    "200045": {
+      "item_id": 210004,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 1
+    },
+    "200046": {
+      "item_id": 210005,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 1
+    },
+    "200047": {
+      "item_id": 210006,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200048": {
+      "item_id": 210007,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200049": {
+      "item_id": 210008,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200050": {
+      "item_id": 210009,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200051": {
+      "item_id": 210010,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200052": {
+      "item_id": 220001,
+      "type": 2,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 1
+    },
+    "200053": {
+      "item_id": 220002,
+      "type": 2,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 1
+    },
+    "200054": {
+      "item_id": 220003,
+      "type": 2,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200055": {
+      "item_id": 220004,
+      "type": 2,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200056": {
+      "item_id": 220005,
+      "type": 2,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200057": {
+      "item_id": 220006,
+      "type": 2,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 2
+    },
+    "200058": {
+      "item_id": 220007,
+      "type": 2,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200059": {
+      "item_id": 220008,
+      "type": 2,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200060": {
+      "item_id": 220009,
+      "type": 2,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200061": {
+      "item_id": 220010,
+      "type": 2,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200221": {
+      "item_id": 210011,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200222": {
+      "item_id": 210012,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200223": {
+      "item_id": 210013,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200224": {
+      "item_id": 210014,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 3
+    },
+    "200225": {
+      "item_id": 210015,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 4
+    },
+    "200226": {
+      "item_id": 210016,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 4
+    },
+    "200227": {
+      "item_id": 210017,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 4
+    },
+    "200228": {
+      "item_id": 210018,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 5
+    },
+    "200229": {
+      "item_id": 210019,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 5
+    },
+    "200230": {
+      "item_id": 210020,
+      "type": 0,
+      "currency": "GP",
+      "prices": [
+        1
+      ],
+      "hours": [
+        -1
+      ],
+      "player_level_limit": 5
+    }
+  }
+}

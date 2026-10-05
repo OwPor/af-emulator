@@ -17,7 +17,7 @@ The repository contents may also be copied directly into the game root.
 This script does NOT download or redistribute Assault Fire game files.
 Before launch, the verified datetime patch is applied to the user's TGame.exe
 with an exact TGame.exe.bak backup. TGame_AFDEV.exe is then made as a local
-private copy of that verified patched executable.
+private copy and receives the verified native ServerMove-v4 AFDEV patch.
 #>
 
 [CmdletBinding()]
@@ -80,7 +80,7 @@ if (-not (Test-IsAdministrator)) {
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version 2.0
 
-$LAUNCHER_REVISION = "2026-09-29-oneclick-v35-local-registration"
+$LAUNCHER_REVISION = "2026-10-05-oneclick-v36-servermove-v4"
 $EXPECTED_TGAME_SHA256 = "B4273F2658CA94EEBC559A997FDFCD02D51E77CE75B892250C1DB7FB80C70B51"
 $TCLS_ORIGINAL_SHA256 = "13EAD403452E0F25CF00658369BF4BF5FF34ED1B16027F7833FB27D398386CD1"
 $TCLS_PATCHED_SHA256  = "3FF351E0ADB594D7544E28DB2E966A6D6EB548E9DF70DAAF4DAF58F2EE438D56"
@@ -596,6 +596,18 @@ function Get-TGameBinaryCheck([string]$RepoRoot,[string]$Path,[string]$VenvPytho
     return $result
 }
 
+function Get-ServerMoveBinaryCheck([string]$RepoRoot,[string]$Path,[string]$VenvPython,[switch]$Apply){
+    $checker=Join-Path $RepoRoot "tools\patches\tgame_servermove_v4.py"; if(-not(Test-Path -LiteralPath $checker -PathType Leaf)){throw "ServerMove v4 binary checker is missing: $checker"}
+    $nativePreference=Get-Variable -Name PSNativeCommandUseErrorActionPreference -ErrorAction SilentlyContinue; if($null -ne $nativePreference){$savedNativePreference=$nativePreference.Value; $PSNativeCommandUseErrorActionPreference=$false}
+    $arguments=@(); if($Apply){$arguments+=@("--apply")}; $arguments+=@("--json",$Path)
+    try{$output=& $VenvPython $checker @arguments; $exitCode=$LASTEXITCODE}catch{throw "ServerMove v4 inspection/patch could not run: $($_.Exception.Message)"}finally{if($null -ne $nativePreference){$PSNativeCommandUseErrorActionPreference=$savedNativePreference}}
+    try{$result=($output -join "`n")|ConvertFrom-Json}catch{throw "ServerMove v4 checker returned invalid output (exit $exitCode): $($output -join ' ')"}
+    $knownStatuses=@("unpatched-compatible","already-patched","unsupported"); if($Apply){$knownStatuses+=@("patched")}
+    if($result.status -notin $knownStatuses){throw "ServerMove v4 checker returned an unknown status: $($result.status)"}
+    if($exitCode -ne 0 -and $result.status -ne "unsupported"){throw "ServerMove v4 inspection failed with exit code $exitCode. $($output -join ' ')"}
+    return $result
+}
+
 function Ensure-AFDev([string]$GameRoot,[string]$VenvPython,[string]$RepoRoot){
     $win32=Join-Path $GameRoot "Binaries\Win32"; $tgame=Join-Path $win32 "TGame.exe"; $afdev=Join-Path $win32 "TGame_AFDEV.exe"; $tgameHash=Get-Sha256 $tgame
     if($tgameHash -eq $EXPECTED_TGAME_SHA256){Write-Host "[OK] TGame.exe matches the validated PH v1.0.0.24 build." -ForegroundColor Green}
@@ -627,14 +639,58 @@ function Ensure-AFDev([string]$GameRoot,[string]$VenvPython,[string]$RepoRoot){
     else{
         Write-Host "[OK] TGame.exe already contains the fully verified datetime patch." -ForegroundColor Green
     }
-    $acceptedTGameHash=Get-Sha256 $tgame
-    $replace=$false; if(-not(Test-Path -LiteralPath $afdev -PathType Leaf)){$replace=$true; Write-Host "[SETUP] TGame_AFDEV.exe is missing."}else{$afdevHash=Get-Sha256 $afdev; if($afdevHash -ne $acceptedTGameHash){Write-Host "[REPAIR] Existing TGame_AFDEV.exe does not match the accepted TGame.exe."; Backup-IfExists $afdev "oneclick_wrong_build"
-            $replace = $true
+
+    $replace=$false
+    if(-not(Test-Path -LiteralPath $afdev -PathType Leaf)){
+        $replace=$true
+        Write-Host "[SETUP] TGame_AFDEV.exe is missing."
+    }
+    else{
+        $afdevDate=Get-TGameBinaryCheck $RepoRoot $afdev $VenvPython
+        $afdevMove=Get-ServerMoveBinaryCheck $RepoRoot $afdev $VenvPython
+        if($afdevDate.status -ne "already-patched" -or $afdevMove.status -eq "unsupported"){
+            Write-Host "[REPAIR] Existing TGame_AFDEV.exe is not the accepted datetime + ServerMove-v4 runtime." -ForegroundColor Yellow
+            Backup-IfExists $afdev "oneclick_wrong_build"
+            Backup-IfExists "$afdev.servermove-v4.bak" "oneclick_old_servermove_backup"
+            $replace=$true
+        }
+        elseif($afdevMove.status -eq "already-patched"){
+            Write-Host "[OK] TGame_AFDEV.exe already contains the verified ServerMove-v4 patch." -ForegroundColor Green
         }
     }
-    if ($replace) { Write-Host "[SETUP] Creating TGame_AFDEV.exe from YOUR OWN verified TGame.exe..."; Copy-Item -LiteralPath $tgame -Destination $afdev -Force }
-    $finalHash=Get-Sha256 $afdev; if($finalHash -ne $acceptedTGameHash){throw "TGame_AFDEV.exe verification failed against the accepted TGame.exe hash."}
-    Write-Host "[OK] PvE AFDEV runtime is present and verified." -ForegroundColor Green; Write-Host "     (Local private copy only; the emulator repository does not redistribute this game binary.)"
+
+    if($replace){
+        Write-Host "[SETUP] Creating TGame_AFDEV.exe from YOUR OWN verified TGame.exe..."
+        Copy-Item -LiteralPath $tgame -Destination $afdev -Force
+        $copiedDate=Get-TGameBinaryCheck $RepoRoot $afdev $VenvPython
+        if($copiedDate.status -ne "already-patched"){
+            throw "Fresh TGame_AFDEV.exe did not preserve the verified datetime patch."
+        }
+    }
+
+    $moveCheck=Get-ServerMoveBinaryCheck $RepoRoot $afdev $VenvPython
+    if($moveCheck.status -eq "unpatched-compatible"){
+        Write-Host "[PATCH] Applying verified native ServerMove v4 to TGame_AFDEV.exe..." -ForegroundColor Yellow
+        $moveResult=Get-ServerMoveBinaryCheck $RepoRoot $afdev $VenvPython -Apply
+        if($moveResult.status -notin @("patched","already-patched")){
+            throw "ServerMove v4 patch failed safely: $($moveResult.message)"
+        }
+    }
+    elseif($moveCheck.status -eq "unsupported"){
+        throw "TGame_AFDEV.exe failed ServerMove-v4 structural validation: $($moveCheck.message)"
+    }
+
+    $finalDate=Get-TGameBinaryCheck $RepoRoot $afdev $VenvPython
+    $finalMove=Get-ServerMoveBinaryCheck $RepoRoot $afdev $VenvPython
+    if($finalDate.status -ne "already-patched"){
+        throw "TGame_AFDEV.exe failed final datetime verification."
+    }
+    if($finalMove.status -ne "already-patched"){
+        throw "TGame_AFDEV.exe failed final ServerMove-v4 verification: $($finalMove.message)"
+    }
+
+    Write-Host "[OK] AFDEV runtime contains verified datetime + native ServerMove-v4 patches." -ForegroundColor Green
+    Write-Host "     (Local private copy only; the emulator repository does not redistribute this game binary.)"
 }
 
 function Wait-ForLaunchGate([string]$StatusPath,[int]$TimeoutSeconds=45){$deadline=(Get-Date).AddSeconds($TimeoutSeconds); $last=$null; while((Get-Date)-lt $deadline){if(Test-Path -LiteralPath $StatusPath -PathType Leaf){try{$last=Get-Content -LiteralPath $StatusPath -Raw|ConvertFrom-Json; if($last.launch_ready -eq $true){return $last}; if($last.passed -eq $false -and $last.errors -and @($last.errors).Count -gt 0){$joined=(@($last.errors)-join "; "); throw "Server preflight failed: $joined"}}catch{if($_.Exception.Message -like "Server preflight failed:*"){throw}}}; Start-Sleep -Milliseconds 250}; if($last){$errors=if($last.errors){@($last.errors)-join "; "}else{"no detailed error was recorded"}; throw "Timed out waiting for game launch gate UNLOCKED. Last preflight: $errors"}; throw "Timed out waiting for server preflight_status.json."}

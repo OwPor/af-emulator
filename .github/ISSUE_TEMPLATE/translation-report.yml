@@ -1,0 +1,91 @@
+name: Incorrect or untranslated in-game text
+description: Report bad wording, untranslated text, missing localization keys, or clipped translated labels.
+title: "[Translation] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report one screen or closely related group of strings per issue.
+        Translation installation and known limits are documented in translations/README.md.
+        Attach screenshots in the screenshot field; original game packages are not needed.
+
+  - type: dropdown
+    id: problem_type
+    attributes:
+      label: Translation problem
+      options:
+        - Incorrect or awkward English
+        - Untranslated text (Chinese or another language)
+        - Missing localization key (question marks or ?INT? text)
+        - Clipped, overlapping, or unreadable translated text
+        - Translation installer error
+    validations:
+      required: true
+
+  - type: input
+    id: client_build
+    attributes:
+      label: Client version and region
+      placeholder: "Assault Fire PH 1.0.0.24"
+    validations:
+      required: true
+
+  - type: input
+    id: patch_version
+    attributes:
+      label: Installed translation patch or repository commit
+      description: Include whether this happened before or after fully restarting the game.
+      placeholder: "Public translations at commit ..., UI English Cleanup v3, or no patch installed"
+    validations:
+      required: true
+
+  - type: input
+    id: location
+    attributes:
+      label: Screen and location of the text
+      placeholder: "Storage > Skills > renewal button beside Bullet Time"
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual_text
+    attributes:
+      label: Current text
+      description: Copy the exact wording, including punctuation or a missing localization key.
+      placeholder: "Replace the bullet"
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected_text
+    attributes:
+      label: Suggested wording or intended meaning
+      description: If you do not know the translation, explain what the control or message does.
+      placeholder: "Reload"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to see the text
+      placeholder: |
+        1. Log in and open Storage.
+        2. Select Skills.
+        3. Look at the renewal button.
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot or installer output
+      description: Drag a screenshot here showing the full screen and affected text. For installer errors, paste the error output. Remove personal information.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional context (optional)
+      description: Include game mode/map, resolution, item ID/name, or a known localization filename/key when relevant. No need to reverse engineer the client.

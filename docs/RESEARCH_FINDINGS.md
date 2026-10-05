@@ -214,6 +214,65 @@ This finding should be reused when validating GP, MP, EXP, property notification
 
 Source implementation: `server/assaultfire_server_v143b.py`.
 
+## 8. Shared native ServerMove was stripped, and the reconstructed v4 path is live-verified
+
+**Status: Verified**
+
+In the validated PH v1.0.0.24 image, the shared native ServerMove target at:
+
+```text
+0x013A88D0
+```
+
+is a stripped `ret 0x28` stub. Static analysis found 33 literal references to that shared target across the normal TG/PvP/PvE/Mecha/AI/Bio movement families. The controller vtables retain the surviving correction and MoveAutonomous dispatch slots.
+
+The public `tools/patches/tgame_servermove_v4.py` tool validates the exact native anchors and installs a small local `.afm4` section into the user's own `TGame_AFDEV.exe`. It redirects only the shared stripped stub. Existing controller vtable entries are deliberately preserved.
+
+The reconstructed path uses surviving PH native implementations including:
+
+```text
+CheckSpeedHack        0x008EF060
+AActor::SetRotation   0x00BE82E0
+FaceRotation thunk    0x015E0AD0
+World TimeSeconds     0x00DA3980
+UWorld::GetWorldInfo  0x00D9C1A0
+virtual correction    +0x4CC
+virtual MoveAutonomous +0x4D0
+```
+
+It also restores the AcknowledgedPawn/GivePawn gate, timestamp/server-time bookkeeping, CustomTimeDilation handling, controller/pawn rotation handling, and the WorldInfo.Pauser movement gate. ClientLoc remains input to the surviving correction path and is not copied directly into Pawn.Location.
+
+### Live validation
+
+On 2026-10-05 a read-only hardware-breakpoint trace observed the exact reconstructed body executing at the live `.afm4` entry **686 times** during Survival. All 686 hits carried the expected authoritative server PlayerController in ECX.
+
+Measured movement during that run:
+
+```text
+client_max_move = 1351.9
+server_max_move = 1355.4
+max_delta       = 24.6
+```
+
+A later Steel Fortress run observed:
+
+```text
+ServerMove-v4       = 4327 hits
+generic MoveAutonomous = 4316 hits
+PZ selector         = 0 hits
+JockeyControlMoveAutonomous = 0 hits
+```
+
+The mech's forward/backward/steering behavior was visually confirmed correct in that run. Therefore the working Steel result must **not** be described as proof that the PZ/Jockey-specific functions executed; the observed working path was the generic virtual MoveAutonomous route.
+
+Steel/TGIF additionally requires a startup guard: the AFDEV loader temporarily restores the stock stripped ServerMove stub during map `OPEN`, then restores and verifies the disk ServerMove-v4 JMP after LoadMap stage 7 and before `SESSION_READY`.
+
+With that live validation complete, the older AFDEV in-memory movement bridge is no longer part of the supported runtime. The loader now requires the verified disk-restored ServerMove-v4 body and fails closed when only the stripped stock stub is present. The v9 DS UDP bridge remains separate network/session transport and does not implement movement.
+
+The one remaining explicit fidelity gap is the exact PH `Pawn.MaxPitchLimit` memory offset used for swimming/flying pitch clamping. The public implementation intentionally does not guess that offset.
+
+Source implementation: `tools/patches/tgame_servermove_v4.py` and `tools/server_spawner/AFDevLoader_v48_spawner_multi_instance.py`.
+
 ## Publication rule
 
 Future additions should preserve the distinction between verified behavior, single captures, and research leads. A promising symbol or export name by itself is not enough to mark a feature as working.

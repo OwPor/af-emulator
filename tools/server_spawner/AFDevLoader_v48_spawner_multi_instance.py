@@ -2,16 +2,19 @@
 r"""
 AFDevLoader v48.2 - generic Assault Fire PH PvE dedicated-server loader.
 
-Starts the validated TGame_AFDEV runtime, enters true server mode, opens the
-room-selected installed PvE map on the game thread, applies captured room
-settings, verifies native movement/correction and the live zero DS key, then
-publishes SESSION_READY for the v9 bridge.
+Starts the validated local TGame_AFDEV runtime, enters true server mode, opens
+the room-selected installed PvE map on the game thread, applies captured room
+settings, verifies movement/correction and the live zero DS key, then publishes
+SESSION_READY for the v9 bridge.
 
-No original game executable is modified on disk. If TGame_AFDEV.exe is absent,
-the loader may create a local private copy from the user's own TGame.exe.
-Runtime addresses are build-specific. If TGame_AFDEV.exe exists, the loader
-uses it regardless of its whole-file hash and verifies required patch-site bytes
-in the suspended process before execution resumes.
+The repository never distributes TGame_AFDEV.exe. The one-click launcher builds
+that private copy from the user's own verified TGame.exe and installs the
+verified .afm4 ServerMove-v4 patch into the AFDEV copy only. Native ServerMove
+v4 is now mandatory for the supported PH v1.0.0.24 AFDEV path: this loader
+validates the live JMP/body and refuses to start gameplay if the local AFDEV
+copy still contains the stripped stock stub. The older in-memory movement
+bridge has been removed. Runtime addresses remain build-specific and every
+required patch site is validated before execution resumes.
 """
 
 import argparse
@@ -289,60 +292,62 @@ DEFAULT_GAME_CLASS = "PVEGame.TGSVGame"
 
 
 # ---------------------------------------------------------------------------
-# v48 native authoritative movement bridge
+# Native ServerMove v4
 # ---------------------------------------------------------------------------
 #
-# Static recovery from THIS exact PH TGame_AFDEV.exe proves:
+# The supported PH v1.0.0.24 AFDEV runtime must use the disk-restored
+# ServerMove v4 body installed into the user's local TGame_AFDEV.exe.
+# The loader validates the shared stripped-stub redirection before gameplay and
+# never installs or patches controller vtables for movement at runtime.
 #
-#   PVEPlayerController vtable +0x4C8  ServerMove
-#       -> 0x013A88D0 = ret 0x28          (stripped/no-op outer handler)
-#
-#   PVEPlayerController vtable +0x528  PlayerWalkingServerMove
-#       -> 0x013A88D0 = ret 0x28          (same stripped/no-op handler)
-#
-# while the important inner UE3 movement engine is still present:
-#
-#   +0x4D0 -> 0x008F24B0  MoveAutonomous  (REAL CODE, ret 0x20)
-#   +0x4CC -> 0x008F2620  client-error/correction engine (REAL CODE)
-#
-# v48 restores BOTH surviving inner movement stages.  It first re-simulates
-# the move through Assault Fire/UE3's own MoveAutonomous -> ProcessMove ->
-# Pawn.AutonomousPhysics path, then calls the genuine +0x4CC client-error /
-# correction engine with the original ServerMove argument block.
-#
-# This is deliberately NOT the old ClientLoc position-copy shim.  The bridge
-# never writes Pawn.Location itself.  ClientLoc is handled only by the stock
-# PH correction routine, which decides ACK vs normal pending adjustment.
-#
-# v48 additionally reconstructs the packed ServerMove View/ClientRoll into
-# the authoritative PlayerController FRotator and supplies the corresponding
-# DeltaRot to MoveAutonomous. This targets server-spawned projectile aim (e.g.
-# grenades) without modifying projectile positions or ClientLoc.
-#
-PVE_SERVERMOVE_SLOT_V48 = 0x4C8
-PVE_SERVERMOVE_ERROR_SLOT_V48 = 0x4CC
-PVE_MOVEAUTONOMOUS_SLOT_V48 = 0x4D0
-PVE_PWSM_SLOT_V48 = 0x528
-
 PVE_SERVERMOVE_STUB_V48 = 0x013A88D0
-PVE_MOVEAUTONOMOUS_IMPL_V48 = 0x008F24B0
-PVE_SERVERMOVE_ERROR_IMPL_V48 = 0x008F2620
 
-# Mutation / TGBioPlayerController vtable for the validated PH TGame build.
-# Every movement entry is checked against the proven slot pattern before patching.
-BIO_PC_VTABLE_V49 = 0x01E42FE0
+SERVERMOVE_V4_HEAD = bytes.fromhex(
+    "55 8B EC 53 56 57 83 EC 30 8B F1 8B 9E D8 01 00 "
+    "00 85 DB 0F 84 56 02 00 00 F3 0F 10 45 08 F3 0F"
+)
+SERVERMOVE_V4_STOCK_STUB = bytes.fromhex("C2 28 00 CC CC")
+STEEL_FORTRESS_MODE_ID_V4 = 0x00002002
+
+# Mutation keeps its own settings path below. Its controller also reaches the
+# shared ServerMove entry, so no movement-specific vtable patch is required.
 BIO_MODE_ID_V49 = 0x00000204
+HERO_MUTATION_MODE_ID = 0x00000209
+TOWER_DEFENSE_MODE_ID = 0x00002005
+TANK_TDM_MODE_ID = 0x00000203
+TANK_SIEGE_MODE_ID = 0x00000206
+TANK_GAME_MODE_IDS = frozenset((TANK_TDM_MODE_ID, TANK_SIEGE_MODE_ID))
 
-# Exact live/reflected PlayerController offsets for this PH build.
-PVE_PC_PAWN_OFFSET_V48 = 0x1D8
-PVE_PC_MAX_RESPONSE_TIME_OFFSET_V48 = 0x388
-PVE_PC_CURRENT_TIMESTAMP_OFFSET_V48 = 0x3F8
-PVE_PC_PENDING_ADJ_TIMESTAMP_OFFSET_V48 = 0x424
-
-# AActor::Rotation in this exact same-era UE3 layout follows Location(+0x54).
-# FRotator = {Pitch,Yaw,Roll} as three INTs at +0x60/+0x64/+0x68.
-PVE_ACTOR_ROTATION_OFFSET_V48 = 0x60
-PVE_PC_PENDING_ADJ_ACKGOOD_OFFSET_V48 = 0x454
+# Stock modes whose match state is owned by their native GameInfo classes.
+# They must not pass through the Survival/Defense difficulty writer.
+NATIVE_GAME_MODE_NAMES = {
+    0x00001001: "Bomb Match",
+    0x00001002: "Team Deathmatch",
+    0x00001003: "Annihilation",
+    0x00001004: "Individual Match",
+    0x00001005: "Team Relay",
+    0x00001006: "Capture Point",
+    0x00001007: "Escape",
+    0x00001008: "Super Team",
+    0x00000201: "Mech War",
+    0x00000202: "Mecha Team",
+    0x00000205: "Crazy Team",
+    0x00000207: "Mecha Doom",
+    0x00002003: "Learning",
+    0x00002004: "Story",
+    0x00000801: "Power Mode Team",
+    0x00000802: "Power Mode Bomb",
+    0x00000803: "Power Mode Annihilation",
+    0x00000804: "Power Mode Individual",
+    0x00000401: "Clan Match Team",
+    0x00000402: "Clan Match Bomb",
+    0x00000403: "Clan Match Annihilation",
+    0x00000404: "Clan Match Capture Point",
+    0x00000101: "Zombie Scavenge",
+    0x00000102: "Zombie Mild",
+    0x00000103: "Survival 3",
+}
+NATIVE_GAME_MODE_IDS = frozenset(NATIVE_GAME_MODE_NAMES)
 
 
 # v45 established the legacy TGSV PvE round family with stock
@@ -907,14 +912,24 @@ def verify_and_patch(hproc, address, expected, replacement, label):
 
 
 def wait_for_engine(hproc, timeout):
-    deadline = time.time() + timeout
+    # Some machines need considerably longer than 20 seconds to publish
+    # GEngine even though UE3 is still making forward progress (GLog is
+    # commonly live first). Keep the dead-process fast fail, but use a
+    # configurable healthy-process deadline and report progress.
+    started = time.monotonic()
+    deadline = started + max(5.0, float(timeout))
+    next_progress = started + 10.0
     last_engine = 0
     last_log = 0
 
-    while time.time() < deadline:
+    while True:
         if not process_alive(hproc):
+            elapsed = time.monotonic() - started
             raise RuntimeError(
-                "TGame exited before GEngine became ready."
+                "TGame exited before GEngine became ready "
+                f"(elapsed={elapsed:.1f}s, "
+                f"GEngine=0x{last_engine:08X}, "
+                f"GLog=0x{last_log:08X})."
             )
 
         try:
@@ -932,13 +947,27 @@ def wait_for_engine(hproc, timeout):
         if last_engine and last_log:
             return last_engine, last_log
 
-        time.sleep(0.10)
+        now = time.monotonic()
+        if now >= deadline:
+            elapsed = now - started
+            raise RuntimeError(
+                "Timed out waiting for UE3 globals. "
+                f"elapsed={elapsed:.1f}s "
+                f"GEngine=0x{last_engine:08X} "
+                f"GLog=0x{last_log:08X}"
+            )
 
-    raise RuntimeError(
-        "Timed out waiting for UE3 globals. "
-        f"GEngine=0x{last_engine:08X} "
-        f"GLog=0x{last_log:08X}"
-    )
+        if now >= next_progress:
+            elapsed = now - started
+            print(
+                f"[AFDEV] UE3 still starting: elapsed={elapsed:.1f}s "
+                f"GEngine=0x{last_engine:08X} "
+                f"GLog=0x{last_log:08X}",
+                flush=True,
+            )
+            next_progress = now + 10.0
+
+        time.sleep(0.10)
 
 
 
@@ -5205,371 +5234,6 @@ def report_setgameinfo_call_trace_v41(hproc, state):
     print()
 
 
-def _build_native_movement_bridge_v48(remote_base):
-    """Build the PH-native ServerMove bridge with stock correction.
-
-    Entry ABI for both stripped +0x4C8/+0x528 handlers:
-        ECX       = PlayerController*
-        [esp+04]  float   TimeStamp
-        [esp+08]  FVector InAccel
-        [esp+14]  FVector ClientLoc
-        [esp+20]  DWORD   NewFlags
-        [esp+24]  DWORD   ClientRoll
-        [esp+28]  DWORD   View
-        callee cleanup = ret 0x28
-
-    v48 restores the two surviving native inner stages in their intended order:
-        +0x4D0 MoveAutonomous(...)
-        +0x4CC ServerMove client-error/correction engine(...same args...)
-
-    Unlike the old ClientLoc shim, this bridge never directly writes
-    Pawn.Location.  ClientLoc is consumed only by Tencent/UE3's surviving
-    correction routine, which decides whether to ACK the move or prepare a
-    normal client adjustment.
-
-    On Mutation's exact validated Bio controller vtable, also mirror the
-    packed client view yaw to the authoritative human Pawn. The Bio
-    human-to-Overload replacement otherwise inherits a stale spawn yaw.
-    """
-    code = bytearray()
-    labels = {}
-    rel32 = []
-    abs32 = []
-
-    def emit(data):
-        code.extend(data)
-
-    def label(name):
-        labels[name] = len(code)
-
-    def jcc(op2, target):
-        emit(bytes((0x0F, op2)))
-        pos = len(code)
-        emit(b"\x00\x00\x00\x00")
-        rel32.append((pos, target))
-
-    # Standard frame; original arguments are [ebp+08] .. [ebp+2C].
-    emit(b"\x55")                    # push ebp
-    emit(b"\x8B\xEC")                # mov ebp,esp
-    emit(b"\x53\x56\x57")            # push ebx / esi / edi
-    emit(b"\x83\xEC\x18")            # sub esp,18h (locals)
-    emit(b"\x8B\xF1")                # mov esi,ecx
-
-    # Require the authoritative pawn for the normal PVE movement path.
-    emit(b"\x8B\x9E" + struct.pack("<I", PVE_PC_PAWN_OFFSET_V48))
-    emit(b"\x85\xDB")
-    jcc(0x84, "done")
-
-    # Ignore duplicate/out-of-order timestamps.
-    emit(b"\xF3\x0F\x10\x45\x08")
-    emit(b"\xF3\x0F\x10\x8E" + struct.pack("<I", PVE_PC_CURRENT_TIMESTAMP_OFFSET_V48))
-    emit(b"\x0F\x2F\xC8")
-    jcc(0x83, "done")
-
-    # DeltaTime = min(MaxResponseTime, TimeStamp - CurrentTimeStamp).
-    emit(b"\xF3\x0F\x5C\xC1")
-    emit(b"\xF3\x0F\x5D\x86" + struct.pack("<I", PVE_PC_MAX_RESPONSE_TIME_OFFSET_V48))
-    emit(b"\xF3\x0F\x11\x45\xE8")
-
-    # Commit CurrentTimeStamp once the move passes the outer timestamp gate.
-    emit(b"\x8B\x45\x08")
-    emit(b"\x89\x86" + struct.pack("<I", PVE_PC_CURRENT_TIMESTAMP_OFFSET_V48))
-
-    # If clamped DeltaTime is positive, simulate through the surviving PH
-    # MoveAutonomous implementation.  Otherwise skip physics but still let the
-    # stock correction engine compare/ack the accepted timestamp.
-    emit(b"\x0F\x57\xD2")
-    emit(b"\x0F\x2F\xC2")
-    jcc(0x86, "correction")
-
-    # Restore replicated acceleration scale (network precision x10 -> x0.1).
-    for src_off, dst_disp in ((0x0C, 0xF4), (0x10, 0xF0), (0x14, 0xEC)):
-        emit(b"\xF3\x0F\x10\x45" + bytes((src_off,)))
-        emit(b"\xF3\x0F\x59\x05")
-        pos = len(code)
-        emit(b"\x00\x00\x00\x00")
-        abs32.append(pos)
-        emit(b"\xF3\x0F\x11\x45" + bytes((dst_disp,)))
-
-    # vtable +0x4D0 -> 0x008F24B0 MoveAutonomous.
-    emit(b"\x8B\x3E")
-    emit(b"\x8B\xBF" + struct.pack("<I", PVE_MOVEAUTONOMOUS_SLOT_V48))
-
-    # v51 rotation reconstruction, based on the same-era UE3
-    # PlayerController.ServerMove ordering.
-    #
-    # Controller view rotation:
-    #   Pitch = View & 0xFFFF
-    #   Yaw   = View >> 16
-    #   Roll  = 0
-    #
-    # ClientRoll belongs to the pawn-facing Rot, not controller ViewRot.
-    # For the normal PVE walking/falling path maxPitch=0, so:
-    #   PawnRot.Pitch = 0
-    #   PawnRot.Yaw   = ViewYaw
-    #   PawnRot.Roll  = (ClientRoll & 0xFF) << 8
-    #
-    # Therefore after installing ViewRot:
-    #   DeltaRot = ControllerRotation - PawnRot
-    #            = {ViewPitch, 0, -(ClientRoll<<8)}
-    #
-    # Swimming/flying MaxPitchLimit + Pawn.FaceRotation remain intentionally
-    # outside this focused pass.
-    emit(b"\x8B\x45\x2C")                  # eax = packed View
-    emit(b"\x8B\xC8")                      # ecx = packed View
-    emit(b"\x25\xFF\xFF\x00\x00")          # eax = ViewPitch
-    emit(b"\xC1\xE9\x10")                  # ecx = ViewYaw
-    emit(b"\x33\xD2")                      # edx = 0 (controller Roll)
-
-    # Commit controller ViewRot = {Pitch,Yaw,0}.
-    emit(b"\x89\x86" + struct.pack("<I", PVE_ACTOR_ROTATION_OFFSET_V48 + 0x0))
-    emit(b"\x89\x8E" + struct.pack("<I", PVE_ACTOR_ROTATION_OFFSET_V48 + 0x4))
-    emit(b"\x89\x96" + struct.pack("<I", PVE_ACTOR_ROTATION_OFFSET_V48 + 0x8))
-
-    # Bio-only Pawn facing sync. ECX still holds client ViewYaw and EBX is the
-    # authoritative Pawn. PVE controller families keep their normal rotation.
-    emit(b"\x81\x3E" + struct.pack("<I", BIO_PC_VTABLE_V49))
-    jcc(0x85, "bio_pawn_rotation_done")
-    emit(b"\xC7\x83" + struct.pack("<I", PVE_ACTOR_ROTATION_OFFSET_V48)
-         + b"\x00\x00\x00\x00")
-    emit(b"\x89\x8B" + struct.pack("<I", PVE_ACTOR_ROTATION_OFFSET_V48 + 0x4))
-    emit(b"\xC7\x83" + struct.pack("<I", PVE_ACTOR_ROTATION_OFFSET_V48 + 0x8)
-         + b"\x00\x00\x00\x00")
-    label("bio_pawn_rotation_done")
-
-    # Push FRotator DeltaRot by value in reverse DWORD order:
-    # Roll, Yaw, Pitch.
-    emit(b"\x8B\x55\x28")                  # edx = ClientRoll
-    emit(b"\x81\xE2\xFF\x00\x00\x00")
-    emit(b"\xC1\xE2\x08")                  # PawnRot.Roll = ClientRoll*256
-    emit(b"\xF7\xDA")                      # DeltaRot.Roll = -PawnRot.Roll
-    emit(b"\x52")                          # DeltaRoll
-    emit(b"\x6A\x00")                      # DeltaYaw = 0
-    emit(b"\x50")                          # DeltaPitch = ViewPitch
-
-    # MoveAutonomous(float dt, DWORD flags, FVector accel, FRotator deltaRot).
-    emit(b"\xFF\x75\xEC")
-    emit(b"\xFF\x75\xF0")
-    emit(b"\xFF\x75\xF4")
-    emit(b"\xFF\x75\x24")
-    emit(b"\xFF\x75\xE8")
-    emit(b"\x8B\xCE")
-    emit(b"\xFF\xD7")
-
-    # v52 remote-facing replication:
-    # The owning controller ViewYaw is authoritative, but the stripped PH
-    # ServerMove path never executes Pawn.FaceRotation. Other clients render
-    # the remote character from Pawn.Rotation, so mirror only the accepted
-    # horizontal ViewYaw into Pawn.Rotation.Yaw after MoveAutonomous.
-    # Leave pawn Pitch/Roll and all stock correction/location logic untouched.
-    emit(b"\x8B\x45\x2C")                  # eax = packed View
-    emit(b"\xC1\xE8\x10")                  # eax = ViewYaw
-    emit(b"\x89\x83" + struct.pack("<I", PVE_ACTOR_ROTATION_OFFSET_V48 + 0x4))
-
-    # Restore the real PH ServerMove error/correction stage. Static disassembly
-    # proves +0x4CC has the SAME 0x28-byte argument ABI and itself returns
-    # `ret 0x28`.  It consumes ClientLoc and TimeStamp to choose ACK vs normal
-    # UE3 pending adjustment; we do not write Pawn.Location here.
-    label("correction")
-    emit(b"\x8B\x3E")
-    emit(b"\x8B\xBF" + struct.pack("<I", PVE_SERVERMOVE_ERROR_SLOT_V48))
-
-    # Push original ServerMove arguments right-to-left: View, Roll, Flags,
-    # ClientLoc Z/Y/X, InAccel Z/Y/X, TimeStamp.
-    for off in (0x2C, 0x28, 0x24, 0x20, 0x1C, 0x18, 0x14, 0x10, 0x0C, 0x08):
-        emit(b"\xFF\x75" + bytes((off,)))
-    emit(b"\x8B\xCE")
-    emit(b"\xFF\xD7")
-
-    label("done")
-    emit(b"\x83\xC4\x18")
-    emit(b"\x5F\x5E\x5B")
-    emit(b"\x8B\xE5\x5D")
-    emit(b"\xC2\x28\x00")
-
-    const_off = len(code)
-    emit(struct.pack("<f", 0.1))
-
-    for pos, target in rel32:
-        if target not in labels:
-            raise RuntimeError(f"v48 x86 label missing: {target}")
-        struct.pack_into("<i", code, pos, labels[target] - (pos + 4))
-
-    const_addr = int(remote_base) + const_off
-    for pos in abs32:
-        struct.pack_into("<I", code, pos, const_addr)
-
-    return bytes(code), const_off
-
-def _validate_movement_vtable_v49(hproc, vtable, label):
-    """Validate a controller vtable before sharing the v48 movement bridge."""
-    server_slot = int(vtable) + PVE_SERVERMOVE_SLOT_V48
-    pwsm_slot = int(vtable) + PVE_PWSM_SLOT_V48
-    move_slot = int(vtable) + PVE_MOVEAUTONOMOUS_SLOT_V48
-    err_slot = int(vtable) + PVE_SERVERMOVE_ERROR_SLOT_V48
-
-    server_orig = read_u32(hproc, server_slot)
-    pwsm_orig = read_u32(hproc, pwsm_slot)
-    move_impl = read_u32(hproc, move_slot)
-    err_impl = read_u32(hproc, err_slot)
-
-    print()
-    print(f"[AFDEV-v49] ===== {label} MOVEMENT VALIDATION =====")
-    print(f"[AFDEV-v49] vtable                     = 0x{int(vtable):08X}")
-    print(f"[AFDEV-v49] +0x4C8 ServerMove          -> 0x{server_orig:08X}")
-    print(f"[AFDEV-v49] +0x4CC correction engine   -> 0x{err_impl:08X}")
-    print(f"[AFDEV-v49] +0x4D0 MoveAutonomous      -> 0x{move_impl:08X}")
-    print(f"[AFDEV-v49] +0x528 WalkingServerMove   -> 0x{pwsm_orig:08X}")
-
-    if server_orig != PVE_SERVERMOVE_STUB_V48:
-        raise RuntimeError(
-            f"v49 movement bridge refused for {label}: +0x4C8 expected "
-            f"0x{PVE_SERVERMOVE_STUB_V48:08X}, got 0x{server_orig:08X}"
-        )
-    if pwsm_orig != PVE_SERVERMOVE_STUB_V48:
-        raise RuntimeError(
-            f"v49 movement bridge refused for {label}: +0x528 expected "
-            f"0x{PVE_SERVERMOVE_STUB_V48:08X}, got 0x{pwsm_orig:08X}"
-        )
-    if move_impl != PVE_MOVEAUTONOMOUS_IMPL_V48:
-        raise RuntimeError(
-            f"v49 movement bridge refused for {label}: +0x4D0 expected "
-            f"0x{PVE_MOVEAUTONOMOUS_IMPL_V48:08X}, got 0x{move_impl:08X}"
-        )
-    if err_impl != PVE_SERVERMOVE_ERROR_IMPL_V48:
-        raise RuntimeError(
-            f"v49 movement bridge refused for {label}: +0x4CC expected "
-            f"0x{PVE_SERVERMOVE_ERROR_IMPL_V48:08X}, got 0x{err_impl:08X}"
-        )
-
-    print(f"[AFDEV-v49] {label} exact movement-slot pattern: PASS")
-
-    return {
-        "label": label,
-        "vtable": int(vtable),
-        "server_slot": server_slot,
-        "pwsm_slot": pwsm_slot,
-        "server_orig": server_orig,
-        "pwsm_orig": pwsm_orig,
-        "move_impl": move_impl,
-        "err_impl": err_impl,
-    }
-
-
-def install_native_movement_bridge_v48(hproc, mode_id=0):
-    """
-    Install one shared native movement bridge.
-
-    PVE is always validated/patched exactly as before.
-    Mutation (ModeId 0x0204) additionally patches TGBioPlayerController, but
-    only if its four live vtable slots exactly match the proven compatible
-    pattern:
-
-      +0x4C8 -> 0x013A88D0  stripped ServerMove
-      +0x528 -> 0x013A88D0  stripped PlayerWalkingServerMove
-      +0x4D0 -> 0x008F24B0  surviving MoveAutonomous
-      +0x4CC -> 0x008F2620  surviving correction engine
-
-    The bridge itself reads +0x4D0/+0x4CC from ECX's current vtable, so the
-    same bridge is controller-family safe once this compatibility check passes.
-    """
-    mode_id = int(mode_id) & 0xFFFFFFFF
-
-    print()
-    print("[AFDEV-v49] ===== NATIVE MOVEMENT + CORRECTION BRIDGE =====")
-    print(f"[AFDEV-v49] room ModeId = 0x{mode_id:08X}")
-
-    targets = [
-        _validate_movement_vtable_v49(
-            hproc,
-            PVE_PC_VTABLE_V24,
-            "PVEPlayerController",
-        )
-    ]
-
-    if mode_id == BIO_MODE_ID_V49:
-        targets.append(
-            _validate_movement_vtable_v49(
-                hproc,
-                BIO_PC_VTABLE_V49,
-                "TGBioPlayerController",
-            )
-        )
-
-    # Validate the shared code targets too.
-    if read_remote(hproc, PVE_SERVERMOVE_STUB_V48, 3) != b"\xC2\x28\x00":
-        raise RuntimeError("v49 movement bridge refused: 0x013A88D0 is not ret 28h")
-    if read_remote(hproc, PVE_MOVEAUTONOMOUS_IMPL_V48, 4) != bytes.fromhex("53 55 56 8B"):
-        raise RuntimeError("v49 movement bridge refused: MoveAutonomous head mismatch")
-
-    remote = kernel32.VirtualAllocEx(
-        hproc,
-        None,
-        0x1000,
-        MEM_COMMIT | MEM_RESERVE,
-        PAGE_EXECUTE_READWRITE,
-    )
-    if not remote:
-        winerr("VirtualAllocEx(v49 native movement/correction bridge)")
-    remote = int(remote)
-
-    bridge, const_off = _build_native_movement_bridge_v48(remote)
-    if len(bridge) >= 0x1000:
-        raise RuntimeError("v49 movement bridge unexpectedly exceeds allocation")
-    write_remote(hproc, remote, bridge)
-
-    # Patch every target only after *all* validation has succeeded. This keeps
-    # the operation fail-closed: no half-patched Bio/PVE state if a slot differs.
-    for t in targets:
-        write_remote(hproc, t["server_slot"], struct.pack("<I", remote))
-        write_remote(hproc, t["pwsm_slot"], struct.pack("<I", remote))
-
-    for t in targets:
-        if (
-            read_u32(hproc, t["server_slot"]) != remote
-            or read_u32(hproc, t["pwsm_slot"]) != remote
-        ):
-            raise RuntimeError(
-                f"v49 movement vtable verification failed for {t['label']}"
-            )
-
-        print(
-            f"[AFDEV-v49] patched {t['label']}: "
-            f"+0x4C8/+0x528 -> 0x{remote:08X}"
-        )
-
-    print(f"[AFDEV-v49] shared bridge code = 0x{remote:08X} ({len(bridge)} bytes)")
-    print(f"[AFDEV-v49] accel scale constant @ +0x{const_off:X} = 0.1")
-    print("[AFDEV-v50] Direct ClientLoc->Pawn.Location writes: NONE")
-    print("[AFDEV-v50] View reconstruction: packed View/ClientRoll -> PC Rotation + DeltaRot")
-    if mode_id == BIO_MODE_ID_V49:
-        print(
-            "[AFDEV-v50] Bio facing sync: authoritative Pawn.Yaw follows packed client View; "
-            "Pawn Pitch/Roll forced to 0"
-        )
-    print("[AFDEV-v50] Projectile spawn positions are NOT patched")
-    print("[AFDEV-v49] physics path: current controller +0x4D0 -> 0x008F24B0")
-    print("[AFDEV-v49] correction path: current controller +0x4CC -> 0x008F2620")
-    print("[AFDEV-v52] Pawn.Rotation.Yaw <- ViewYaw for remote-facing replication")
-    print("[AFDEV-v52] Remaining stock gap: full Pawn.FaceRotation semantics + swim/fly pitch clamp")
-    print("[AFDEV-v49] ===== END NATIVE MOVEMENT + CORRECTION BRIDGE =====")
-    print()
-
-    return {
-        "remote": remote,
-        "targets": targets,
-        # Backward-compatible keys used by existing diagnostics/logging.
-        "server_slot": targets[0]["server_slot"],
-        "pwsm_slot": targets[0]["pwsm_slot"],
-        "server_orig": targets[0]["server_orig"],
-        "pwsm_orig": targets[0]["pwsm_orig"],
-        "move_impl": targets[0]["move_impl"],
-        "err_impl": targets[0]["err_impl"],
-        "size": len(bridge),
-        "bio_active": any(t["vtable"] == BIO_PC_VTABLE_V49 for t in targets),
-    }
-
-
 # ---------------------------------------------------------------------------
 # r12 PvE GameSpecificSettings propagation
 # ---------------------------------------------------------------------------
@@ -6007,12 +5671,14 @@ def apply_pve_game_settings(hproc, hthread, authority, mode_id, map_id, sub_mode
     supported_modes = {
         0x00002001: "Survival",
         0x00002002: "Defense",
+        0x00002005: "Tower Defense",
     }
     mode_name = supported_modes.get(mode_id)
     if mode_name is None:
         raise RuntimeError(
             f"unsupported AFDEV ModeId 0x{mode_id:08X}; "
-            "verified modes are 0x00002001 (Survival) and 0x00002002 (Defense)"
+            "settings families are Survival (0x2001), Defense (0x2002), "
+            "and Tower Defense (0x2005)"
         )
     if sub_mode_id not in (0x00001001, 0x00001002, 0x00001003):
         raise RuntimeError(f"unsupported PvE SubModeId 0x{sub_mode_id:08X}")
@@ -6193,21 +5859,24 @@ def main():
     )
 
     ap.add_argument(
-        "--no-native-movement",
-        action="store_true",
-        help=(
-            "disable the v48 native movement/correction ServerMove bridge "
-            "(enabled by default)"
-        ),
-    )
-
-    ap.add_argument(
         "--delay",
         type=float,
         default=3.0,
         help=(
             "extra seconds to wait after GEngine/GLog become valid "
             "(default 3)"
+        ),
+    )
+    ap.add_argument(
+        "--engine-timeout",
+        type=float,
+        default=max(
+            5.0,
+            float(os.environ.get("AF_DS_ENGINE_TIMEOUT", "60")),
+        ),
+        help=(
+            "seconds to wait for live TGame to publish GEngine/GLog "
+            "(default 60; env AF_DS_ENGINE_TIMEOUT)"
         ),
     )
     ap.add_argument(
@@ -6497,16 +6166,92 @@ def main():
                 "[AFDEV]   result  : normal TGame mutex remains free"
             )
 
-            v48_movement_state = None
-            if args.no_native_movement:
+            servermove_v4_state = None
+            steel_v4_deferred = False
+            steel_v4_saved_stub = b""
+
+            live_servermove_stub = read_remote(
+                pi.hProcess,
+                PVE_SERVERMOVE_STUB_V48,
+                5,
+            )
+
+            if live_servermove_stub == SERVERMOVE_V4_STOCK_STUB:
+                raise RuntimeError(
+                    "native ServerMove v4 is required, but TGame_AFDEV.exe still "
+                    "contains the stripped stock ServerMove stub; rerun "
+                    "START_ASSAULT_FIRE.ps1 or apply "
+                    "tools/patches/tgame_servermove_v4.py to the local AFDEV copy"
+                )
+            if len(live_servermove_stub) != 5 or live_servermove_stub[0] != 0xE9:
+                raise RuntimeError(
+                    "shared ServerMove stub does not match the required "
+                    "ServerMove-v4 JMP"
+                )
+
+            rel = struct.unpack("<i", live_servermove_stub[1:5])[0]
+            disk_servermove_v4_target = (
+                PVE_SERVERMOVE_STUB_V48 + 5 + rel
+            ) & 0xFFFFFFFF
+            candidate_head = read_remote(
+                pi.hProcess,
+                disk_servermove_v4_target,
+                len(SERVERMOVE_V4_HEAD),
+            )
+            if candidate_head != SERVERMOVE_V4_HEAD:
+                raise RuntimeError(
+                    "shared ServerMove stub JMP target does not match the "
+                    "verified ServerMove-v4 body"
+                )
+
+            # Steel/TGIF touches the shared movement entry during map OPEN.
+            # Historical stock-stub runs load the same map successfully, so
+            # defer v4 only during that startup window. The client is not
+            # released until SESSION_READY, and v4 is restored immediately
+            # after LoadMap stage 7.
+            if int(args.mode_id) == STEEL_FORTRESS_MODE_ID_V4:
+                steel_v4_saved_stub = bytes(live_servermove_stub)
+                write_remote(
+                    pi.hProcess,
+                    PVE_SERVERMOVE_STUB_V48,
+                    SERVERMOVE_V4_STOCK_STUB,
+                )
+                verify = read_remote(
+                    pi.hProcess,
+                    PVE_SERVERMOVE_STUB_V48,
+                    5,
+                )
+                if verify != SERVERMOVE_V4_STOCK_STUB:
+                    raise RuntimeError(
+                        "Steel ServerMove-v4 startup defer verification failed"
+                    )
+                steel_v4_deferred = True
                 print(
-                    "[AFDEV-v48] Native movement/correction bridge disabled by "
-                    "--no-native-movement."
+                    "[AFDEV-SERVERMOVE-v4-STEEL] DEFERRED during TGIF OPEN: "
+                    "shared stub restored to stock ret 0x28"
+                )
+
+            servermove_v4_state = {
+                "remote": disk_servermove_v4_target,
+                "disk_patch": True,
+                "targets": [
+                    {"label": "shared ServerMove/PWSM disk patch v4"}
+                ],
+            }
+            print(
+                "[AFDEV-SERVERMOVE-v4] REQUIRED native disk patch verified: "
+                f"0x{PVE_SERVERMOVE_STUB_V48:08X} -> "
+                f"0x{disk_servermove_v4_target:08X}"
+            )
+            if steel_v4_deferred:
+                print(
+                    "[AFDEV-SERVERMOVE-v4] native v4 deferred only for Steel OPEN; "
+                    "it will be restored after LoadMap stage 7."
                 )
             else:
-                v48_movement_state = install_native_movement_bridge_v48(
-                    pi.hProcess,
-                    args.mode_id,
+                print(
+                    "[AFDEV-SERVERMOVE-v4] native v4 owns authoritative movement; "
+                    "no runtime movement bridge is installed."
                 )
 
             stage_marker_ptr, stage_instrumentation_base = (
@@ -6561,7 +6306,7 @@ def main():
 
         engine_ptr, log_ptr = wait_for_engine(
             pi.hProcess,
-            timeout=20.0,
+            timeout=max(5.0, float(args.engine_timeout)),
         )
 
         print(
@@ -6719,6 +6464,49 @@ def main():
                 "[AFDEV] LoadMap completed all seven instrumented stages."
             )
 
+        if steel_v4_deferred:
+            if highest_stage < 7:
+                raise RuntimeError(
+                    "Steel LoadMap did not reach stage 7; refusing to enable "
+                    "ServerMove v4 into an incomplete world"
+                )
+            write_remote(
+                pi.hProcess,
+                PVE_SERVERMOVE_STUB_V48,
+                steel_v4_saved_stub,
+            )
+            restored = read_remote(
+                pi.hProcess,
+                PVE_SERVERMOVE_STUB_V48,
+                5,
+            )
+            if restored != steel_v4_saved_stub or restored[0] != 0xE9:
+                raise RuntimeError(
+                    "Steel ServerMove-v4 post-LoadMap restore verification failed"
+                )
+            rel = struct.unpack("<i", restored[1:5])[0]
+            restored_target = (
+                PVE_SERVERMOVE_STUB_V48 + 5 + rel
+            ) & 0xFFFFFFFF
+            restored_head = read_remote(
+                pi.hProcess,
+                restored_target,
+                len(SERVERMOVE_V4_HEAD),
+            )
+            if (
+                restored_target != disk_servermove_v4_target
+                or restored_head != SERVERMOVE_V4_HEAD
+            ):
+                raise RuntimeError(
+                    "Steel ServerMove-v4 restored target/body verification failed"
+                )
+            print(
+                "[AFDEV-SERVERMOVE-v4-STEEL] RESTORED after LoadMap stage 7: "
+                f"0x{PVE_SERVERMOVE_STUB_V48:08X} -> "
+                f"0x{restored_target:08X} PASS"
+            )
+            steel_v4_deferred = False
+
         print()
         print(
             "[AFDEV] Waiting for OPEN travel request to be consumed..."
@@ -6780,21 +6568,19 @@ def main():
                     "[AFDEV-v41] Skipping AFDEV local-player and loading-UI "
                     "logic because GIsClient=0."
                 )
-                if v48_movement_state:
-                    print(
-                        "[AFDEV-v48] Native movement ACTIVE: +0x4C8/+0x528 -> "
-                        f"0x{v48_movement_state['remote']:08X} -> "
-                        "MoveAutonomous 0x008F24B0 -> correction 0x008F2620"
+                if not servermove_v4_state:
+                    raise RuntimeError(
+                        "ServerMove-v4 readiness state missing after validated startup"
                     )
-                    print(
-                        "[AFDEV-v48] ClientLoc is NOT copied to Pawn.Location; "
-                        "movement is re-simulated by server physics, then stock PH correction runs."
-                    )
-                else:
-                    print(
-                        "[AFDEV-v48] Native movement/correction bridge OFF; this is the "
-                        "v45 movement baseline."
-                    )
+                print(
+                    "[AFDEV-SERVERMOVE-v4] Native movement ACTIVE: "
+                    f"0x{PVE_SERVERMOVE_STUB_V48:08X} -> "
+                    f"0x{servermove_v4_state['remote']:08X}"
+                )
+                print(
+                    "[AFDEV-SERVERMOVE-v4] Runtime movement bridge: REMOVED; "
+                    "authoritative movement stays inside the restored native ServerMove path."
+                )
                 print(
                     "[AFDEV-v41] the selected PvE map server world is left running for "
                     "the normal PH client / bridge connection."
@@ -6808,7 +6594,7 @@ def main():
                     "expected GIsClient=0 GIsServer=1."
                 )
 
-                if int(args.mode_id) in (0x00002001, 0x00002002):
+                if int(args.mode_id) in (0x00002001, 0x00002002, TOWER_DEFENSE_MODE_ID):
                     # r12: apply the room's real PvE settings before the client
                     # handshake is released.  This is early enough that PVE GameStart
                     # / difficulty Kismet consumes the captured SubModeId instead of
@@ -6882,6 +6668,53 @@ def main():
                         "[AFDEV-MUTATION] Native TGBioGame.TGBioMatch startup; "
                         "skipped PvE-specific GameSettings writes."
                     )
+                elif int(args.mode_id) == HERO_MUTATION_MODE_ID:
+                    # TGBio2Match owns the Queen/hero match state. Its submode
+                    # is not a Survival/Defense difficulty selection.
+                    pve_settings_state = {
+                        "difficulty": 0,
+                        "difficulty_name": "Native",
+                        "difficulty_applied": False,
+                        "mode_name": "Hero Mutation",
+                        "advanced_hero": False,
+                    }
+                    print(
+                        "[AFDEV-HERO-MUTATION] Native TGBio2Game.TGBio2Match startup; "
+                        "skipped PvE-specific GameSettings writes."
+                    )
+                elif int(args.mode_id) in TANK_GAME_MODE_IDS:
+                    # Tank modes use native TGTankGame settings rather than
+                    # the Survival/Defense PvE difficulty fields.
+                    tank_mode_name = (
+                        "Tank TDM"
+                        if int(args.mode_id) == TANK_TDM_MODE_ID
+                        else "Tank Siege"
+                    )
+                    pve_settings_state = {
+                        "difficulty": 0,
+                        "difficulty_name": "Native",
+                        "difficulty_applied": False,
+                        "mode_name": tank_mode_name,
+                        "advanced_hero": False,
+                    }
+                    print(
+                        f"[AFDEV-TANK] Native TGTankGame startup ({tank_mode_name}); "
+                        "skipped PvE-specific GameSettings writes."
+                    )
+                elif int(args.mode_id) in NATIVE_GAME_MODE_IDS:
+                    native_mode_name = NATIVE_GAME_MODE_NAMES[int(args.mode_id)]
+                    pve_settings_state = {
+                        "difficulty": 0,
+                        "difficulty_name": "Native",
+                        "difficulty_applied": False,
+                        "mode_name": native_mode_name,
+                        "advanced_hero": False,
+                    }
+                    print(
+                        f"[AFDEV-NATIVE-MODE] {native_mode_name} startup "
+                        f"mode=0x{int(args.mode_id) & 0xFFFFFFFF:08X}; "
+                        "skipped PvE-specific GameSettings writes."
+                    )
                 else:
                     raise RuntimeError(
                         f"unsupported AFDEV ModeId 0x{int(args.mode_id) & 0xFFFFFFFF:08X}"
@@ -6921,7 +6754,8 @@ def main():
                         "advanced_hero": bool(pve_settings_state["advanced_hero"]),
                         "gworld": int(final_gworld or 0),
                         "loadmap_stage": int(highest_stage),
-                        "native_movement": bool(v48_movement_state),
+                        "native_movement": bool(servermove_v4_state),
+                        "servermove_v4": bool(servermove_v4_state),
                         "zero_dskey": bool(zero_dskey_state.get("verified")),
                         "zero_dskey_socket": int(zero_dskey_state.get("socket") or 0),
                         "zero_dskey_rekeys": int(zero_dskey_state.get("rekey_count") or 0),
@@ -6935,23 +6769,26 @@ def main():
                     os.replace(tmp_ready, ready_file)
                     print(
                         f"[AFDEV-v48-SPAWNER] SESSION_READY file={ready_file} "
-                        f"pid={pi.dwProcessId} udp={port} native_movement={bool(v48_movement_state)} "
+                        f"pid={pi.dwProcessId} udp={port} servermove_v4={bool(servermove_v4_state)} "
                         f"difficulty={pve_settings_state['difficulty_name']} "
                         f"submode=0x{int(args.sub_mode_id):08x} flags=0x{int(args.room_flags):08x} "
                         f"zero_dskey={bool(zero_dskey_state.get('verified'))}"
                     )
 
-                try:
-                    r20_sync_remote_pri_name(
-                        pi.hProcess,
-                        pi.hThread,
-                        os.environ.get("AF_PLAYER_NICKNAME", ""),
-                        timeout=45.0,
-                    )
-                except Exception as exc:
-                    print(
-                        f"[AFDEV-PROFILE-r20] nonfatal PRI sync error: {exc}"
-                    )
+                if os.environ.get("AF_DYNAMIC_LOGIN_NAMES") != "1":
+                    try:
+                        r20_sync_remote_pri_name(
+                            pi.hProcess,
+                            pi.hThread,
+                            os.environ.get("AF_PLAYER_NICKNAME", ""),
+                            timeout=45.0,
+                        )
+                    except Exception as exc:
+                        print(
+                            f"[AFDEV-PROFILE-r20] nonfatal PRI sync error: {exc}"
+                        )
+                else:
+                    print("[AFDEV-PROFILE] UIN-based login nicknames active; owner-only PRI rename skipped.")
 
                 print(
                     "[AFDEV-v41] Press Ctrl+C in this loader only when you "
