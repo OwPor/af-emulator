@@ -11813,6 +11813,12 @@ def handle_placeholder(conn, addr, label):
                                             )
                                             if shared_leave and shared_leave.get("room"):
                                                 _v150_sync_role_states(shared_leave["room"])
+                                            if shared_leave and shared_leave.get("new_owner_uin") is not None:
+                                                log(
+                                                    "ROOM",
+                                                    f"owner transferred room={shared_leave['room_id']} "
+                                                    f"{shared_leave['old_owner_uin']} -> {shared_leave['new_owner_uin']}",
+                                                )
                                             role_state.pop("v143b_ds_endpoint", None)
                                             role_state.pop("v132_pve_afdev_handoff_sent", None)
                                             log(
@@ -13564,6 +13570,12 @@ def handle_placeholder(conn, addr, label):
                     shared_disconnect = V150_ROOM_REGISTRY.leave_room(disconnect_uin)
                     if shared_disconnect and shared_disconnect.get("room"):
                         _v150_sync_role_states(shared_disconnect["room"])
+                        if shared_disconnect.get("new_owner_uin") is not None:
+                            log(
+                                "ROOM",
+                                f"owner transferred room={shared_disconnect['room_id']} "
+                                f"{shared_disconnect['old_owner_uin']} -> {shared_disconnect['new_owner_uin']}",
+                            )
                         disconnect_ntf = _v138_build_ntf_leave_match_room(
                             seat_index=int(shared_disconnect["removed"].get("seat_index", 0)),
                             leave_reason=0,

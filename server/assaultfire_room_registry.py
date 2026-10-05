@@ -314,9 +314,12 @@ class RoomRegistry:
             room["no_late_join"] = bool(room.get("no_late_join", False))
             room["created_at"] = float(room.get("created_at") or time.time())
             room["members"] = {}
-            room["members"][owner_uin] = self._member(
+            room["join_seq"] = 1
+            owner_member = self._member(
                 owner_uin, owner_name, 0, owner=True, observer=False
             )
+            owner_member["join_seq"] = 1
+            room["members"][owner_uin] = owner_member
             self._rooms[room_id] = room
             self._player_room[owner_uin] = room_id
             return self._snapshot(room)
@@ -350,6 +353,18 @@ class RoomRegistry:
                 raise RoomRegistryError("room-full")
             existing = sorted(int(x) for x in room["members"])
             member = self._member(uin, nickname, seat, owner=False, observer=observer)
+            if "join_seq" in room and isinstance(room["join_seq"], int):
+                room["join_seq"] = int(room["join_seq"]) + 1
+            else:
+                room["join_seq"] = max(
+                    (
+                        int(m.get("join_seq", 0) or 0)
+                        for m in room["members"].values()
+                    ),
+                    default=0,
+                ) or len(room["members"])
+                room["join_seq"] += 1
+            member["join_seq"] = int(room["join_seq"])
             room["members"][uin] = member
             self._player_room[uin] = room_id
             return self._snapshot(room), copy.deepcopy(member), existing
@@ -397,7 +412,12 @@ class RoomRegistry:
                 if old_owner == uin:
                     new_owner_member = min(
                         room["members"].values(),
-                        key=lambda m: (int(m["seat_index"]), int(m["uin"])),
+                        key=lambda m: (
+                            int(m.get("join_seq", 10**12) or 10**12),
+                            float(m.get("joined_at", 0.0) or 0.0),
+                            int(m["seat_index"]),
+                            int(m["uin"]),
+                        ),
                     )
                     new_owner = int(new_owner_member["uin"])
                     room["owner_uin"] = new_owner
@@ -608,6 +628,8 @@ class RoomRegistry:
                     new_owner = min(
                         members.values(),
                         key=lambda member: (
+                            int(member.get("join_seq", 10**12) or 10**12),
+                            float(member.get("joined_at", 0.0) or 0.0),
                             int(member.get("seat_index", 0)),
                             int(member.get("uin", 0)),
                         ),

@@ -97,7 +97,7 @@ class RoomRegistryConsistencyTests(unittest.TestCase):
             spawner.register_room_player(1, 20000)
 
             left = registry.leave_room(10000)
-            # Lowest seat wins in the registry: 30000 is seat 1, while 20000 is seat 2.
+            # Earliest-joined wins in the registry: 30000 joined first, and 20000 joined second.
             self.assertEqual(left["new_owner_uin"], 30000)
 
             result = spawner.remove_room_player(
@@ -107,6 +107,35 @@ class RoomRegistryConsistencyTests(unittest.TestCase):
             )
             self.assertEqual(result["owner_id"], 30000)
             self.assertEqual(spawner.allocation_for_room(1).owner_id, 30000)
+
+    def test_owner_transfer_follows_join_order_not_seat(self):
+        registry = RoomRegistry()
+        self.make_room(registry, owner=10000)
+        registry.join_room(uin=20000, nickname="P20000", room_id=1, password="", observer=False)
+        registry.join_room(uin=30000, nickname="P30000", room_id=1, password="", observer=False)
+        # Seats: owner 10000 seat0, 20000 seat1, 30000 seat2.
+        first = registry.leave_room(10000)
+        self.assertEqual(first["new_owner_uin"], 20000)
+        self.assertEqual(registry.get_room(1)["owner_uin"], 20000)
+        second = registry.leave_room(20000)
+        self.assertEqual(second["new_owner_uin"], 30000)
+        self.assertEqual(registry.get_room(1)["owner_uin"], 30000)
+        third = registry.leave_room(30000)
+        self.assertTrue(third["deleted"])
+        self.assertIsNone(registry.get_room(1))
+
+    def test_owner_transfer_prefers_earliest_joined_when_seats_reordered(self):
+        registry = RoomRegistry()
+        self.make_room(registry, owner=10000)
+        registry.join_room(uin=20000, nickname="P20000", room_id=1, password="", observer=False)
+        registry.join_room(uin=30000, nickname="P30000", room_id=1, password="", observer=False)
+        # 30000 takes seat 0-style lower seat via swap: move 30000 to a lower
+        # seat than 20000 so lowest-seat rule would pick 30000, but join order
+        # says 20000 joined first and must inherit ownership.
+        registry.move_member(20000, 3, 1)
+        registry.move_member(30000, 1, 1)
+        left = registry.leave_room(10000)
+        self.assertEqual(left["new_owner_uin"], 20000)
 
     def test_round_reset_preserves_room_and_clears_ready_started_state(self):
         registry = RoomRegistry()
